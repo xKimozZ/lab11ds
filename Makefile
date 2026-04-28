@@ -42,10 +42,10 @@ features:
 	$(PYTHON) src/features/engineer.py --config $(CONFIG)
 
 train:
-	$(PYTHON) -m src.models.train --config $(CONFIG)
+	$(PYTHON) src/models/train.py --config $(CONFIG)
 
 classify:
-	$(PYTHON) -m src.models.classify --config $(CONFIG) --step both
+	$(PYTHON) src/models/classify.py --config $(CONFIG) --step both
 
 report:
 	$(PYTHON) src/reports/generate_report.py --config $(CONFIG)
@@ -59,7 +59,7 @@ pipeline:
 	    --input data/processed/cleaned.csv \
 	    --output reports/validation_cleaned.json
 	$(PYTHON) src/features/engineer.py --config $(CONFIG)
-	$(PYTHON) -m src.models.classify --config $(CONFIG) --step both
+	$(PYTHON) src/models/classify.py --config $(CONFIG) --step both
 	$(PYTHON) src/reports/generate_report.py --config $(CONFIG)
 
 # ── quality ────────────────────────────────────────────────────────────────
