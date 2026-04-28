@@ -76,25 +76,19 @@ Your config should define paths and settings for:
 Your pipeline must produce the following artifacts:
 
 1. `reports/validation_raw.json`
-   - validation summary of raw dataset
-
+  - validation summary of raw dataset
 2. `reports/cleaning_log.json`
-   - cleaning actions (duplicates removed, imputation, outlier handling, final rows)
-
+  - cleaning actions (duplicates removed, imputation, outlier handling, final rows)
 3. `reports/validation_cleaned.json`
-   - validation summary after cleaning
-
+  - validation summary after cleaning
 4. `reports/feature_log.json`
-   - feature engineering summary (input rows, output rows, feature count)
-
+  - feature engineering summary (input rows, output rows, feature count)
 5. `reports/metrics.json`
-   - baseline model metrics (at least accuracy and F1)
-
+  - baseline model metrics (at least accuracy and F1)
 6. `reports/classification_metrics.json`
-   - multi-model benchmark results and selected best model
-
+  - multi-model benchmark results and selected best model
 7. `reports/pipeline_report.md`
-   - final human-readable summary of the full pipeline
+  - final human-readable summary of the full pipeline
 
 ## Model Artifacts to Save
 
@@ -120,9 +114,12 @@ Your `Makefile` should include targets equivalent to:
 
 ## GitHub Actions (CI) Requirements
 
+You need to create your own gitHub repo with this workflow
+
 Your CI workflow should:
 
 1. Run on `push` and `pull_request`
 2. Set up Python
 3. Install dependencies
 4. Run make pipeline
+

@@ -1,4 +1,5 @@
 .DS_Store
+Thumbs.db
 
 # Python bytecode and cache
 __pycache__/
@@ -9,12 +10,15 @@ __pycache__/
 .venv/
 venv/
 env/
+ENV/
 
 # Build and packaging
 build/
 dist/
 *.egg-info/
 .eggs/
+wheels/
+*.whl
 
 # Tool caches
 .pytest_cache/
@@ -23,6 +27,7 @@ dist/
 .coverage
 .coverage.*
 htmlcov/
+coverage.xml
 
 # Jupyter
 .ipynb_checkpoints/
@@ -30,3 +35,11 @@ htmlcov/
 # IDE/editor
 .vscode/
 .idea/
+
+# Environment variables
+.env
+
+# Generated pipeline artifacts
+data/processed/
+reports/
+models/

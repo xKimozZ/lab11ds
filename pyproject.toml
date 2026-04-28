@@ -3,8 +3,44 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "student_lab_template"
+name = "teen_mental_health_pipeline"
 version = "0.1.0"
-description = "TODO: Add project description"
+description = "End-to-end ML pipeline for Teen Mental Health dataset"
+requires-python = ">=3.10"
 
-# TODO: Add dependencies and optional tool configs (pytest, black, flake8, etc.)
+dependencies = [
+    "pandas>=1.5",
+    "scikit-learn>=1.2",
+    "pydantic>=2.0",
+    "toml>=0.10",
+    "python-dotenv>=1.0",
+    "numpy>=1.23",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "isort>=5.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
