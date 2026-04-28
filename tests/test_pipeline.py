@@ -1,15 +1,13 @@
 """Unit tests for the pipeline modules."""
 
-import json
-import tempfile
-from pathlib import Path
-
 import pandas as pd
-import pytest
 
-from src.data.preprocess import clean_data, DataConfig as PreprocessDataConfig
-from src.data.validate import build_validation_report, DataConfig as ValidateDataConfig
-from src.features.engineer import engineer_features, DataConfig as EngineerDataConfig
+from src.data.preprocess import DataConfig as PreprocessDataConfig
+from src.data.preprocess import clean_data
+from src.data.validate import DataConfig as ValidateDataConfig
+from src.data.validate import build_validation_report
+from src.features.engineer import DataConfig as EngineerDataConfig
+from src.features.engineer import engineer_features
 
 
 # ---------------------------------------------------------------------------
@@ -33,34 +31,36 @@ TARGET_COL = "depression_label"
 
 def _make_sample_df(n: int = 20) -> pd.DataFrame:
     """Return a minimal valid DataFrame mimicking the raw dataset."""
-    import numpy as np
-
-    rng = pd.np if hasattr(pd, "np") else __import__("numpy").random.default_rng(42)
-    data = {
-        "age": [15, 16, 17, 18, 15, 16, 17, 18, 15, 16,
-                15, 16, 17, 18, 15, 16, 17, 18, 15, 16],
-        "daily_social_media_hours": [2.0, 3.5, 1.0, 4.0, 2.5, 3.0, 1.5, 5.0, 2.0, 3.0,
-                                     2.0, 3.5, 1.0, 4.0, 2.5, 3.0, 1.5, 5.0, 2.0, 3.0],
-        "sleep_hours": [7.0, 6.5, 8.0, 5.0, 7.5, 6.0, 8.5, 4.5, 7.0, 6.5,
-                        7.0, 6.5, 8.0, 5.0, 7.5, 6.0, 8.5, 4.5, 7.0, 6.5],
-        "screen_time_before_sleep": [1.0, 2.0, 0.5, 3.0, 1.5, 2.5, 0.0, 3.5, 1.0, 2.0,
-                                     1.0, 2.0, 0.5, 3.0, 1.5, 2.5, 0.0, 3.5, 1.0, 2.0],
-        "academic_performance": [3.0, 2.5, 3.5, 2.0, 3.0, 2.5, 3.5, 1.5, 3.0, 2.5,
-                                 3.0, 2.5, 3.5, 2.0, 3.0, 2.5, 3.5, 1.5, 3.0, 2.5],
-        "physical_activity": [1.0, 2.0, 3.0, 0.5, 1.5, 2.5, 3.5, 0.0, 1.0, 2.0,
-                               1.0, 2.0, 3.0, 0.5, 1.5, 2.5, 3.5, 0.0, 1.0, 2.0],
-        "stress_level": [3, 4, 2, 5, 3, 4, 2, 5, 3, 4,
-                         3, 4, 2, 5, 3, 4, 2, 5, 3, 4],
-        "anxiety_level": [2, 3, 1, 4, 2, 3, 1, 4, 2, 3,
-                          2, 3, 1, 4, 2, 3, 1, 4, 2, 3],
-        "addiction_level": [3, 4, 2, 5, 3, 4, 2, 5, 3, 4,
-                            3, 4, 2, 5, 3, 4, 2, 5, 3, 4],
-        "gender": ["Male", "Female"] * 10,
-        "platform_usage": ["Instagram", "TikTok", "YouTube", "Twitter", "Instagram"] * 4,
-        "social_interaction_level": ["Low", "Medium", "High"] * 6 + ["Low", "Medium"],
-        "depression_label": [0, 1] * 10,
-    }
-    return pd.DataFrame(data)[:n]
+    ages = ([15, 16, 17, 18] * 5)[:n]
+    hours = ([2.0, 3.5, 1.0, 4.0, 2.5] * 4)[:n]
+    sleep = ([7.0, 6.5, 8.0, 5.0, 7.5] * 4)[:n]
+    screen = ([1.0, 2.0, 0.5, 3.0, 1.5] * 4)[:n]
+    academic = ([3.0, 2.5, 3.5, 2.0, 3.0] * 4)[:n]
+    activity = ([1.0, 2.0, 3.0, 0.5, 1.5] * 4)[:n]
+    stress = ([3, 4, 2, 5, 3] * 4)[:n]
+    anxiety = ([2, 3, 1, 4, 2] * 4)[:n]
+    addiction = ([3, 4, 2, 5, 3] * 4)[:n]
+    gender = (["Male", "Female"] * 10)[:n]
+    platform = (["Instagram", "TikTok", "YouTube", "Twitter", "Instagram"] * 4)[:n]
+    interaction = (["Low", "Medium", "High"] * 7)[:n]
+    label = ([0, 1] * 10)[:n]
+    return pd.DataFrame(
+        {
+            "age": ages,
+            "daily_social_media_hours": hours,
+            "sleep_hours": sleep,
+            "screen_time_before_sleep": screen,
+            "academic_performance": academic,
+            "physical_activity": activity,
+            "stress_level": stress,
+            "anxiety_level": anxiety,
+            "addiction_level": addiction,
+            "gender": gender,
+            "platform_usage": platform,
+            "social_interaction_level": interaction,
+            "depression_label": label,
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -174,6 +174,11 @@ def test_engineer_features_log_keys():
         categorical_columns=CATEGORICAL_COLS,
     )
     _, log = engineer_features(df, config)
-    for key in ("input_rows", "output_rows", "numeric_features_scaled",
-                "categorical_features_encoded", "output_feature_count"):
+    for key in [
+        "input_rows",
+        "output_rows",
+        "numeric_features_scaled",
+        "categorical_features_encoded",
+        "output_feature_count",
+    ]:
         assert key in log

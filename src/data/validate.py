@@ -31,14 +31,16 @@ def load_config(filepath: str) -> AppConfig:
 
 def build_validation_report(df: pd.DataFrame, config: DataConfig) -> dict:
     """Build validation metrics."""
-    missing_by_column = {k: int(v) for k, v in df.isna().sum().to_dict().items()}
+    missing_raw = df.isna().sum().to_dict()
+    missing_by_column = {k: int(v) for k, v in missing_raw.items()}
+    dtypes_raw = df.dtypes.to_dict()
     report: dict = {
         "generated_at": datetime.utcnow().isoformat(),
         "row_count": int(len(df)),
         "column_count": int(len(df.columns)),
         "duplicate_rows": int(df.duplicated().sum()),
         "missing_by_column": missing_by_column,
-        "dtypes": {k: str(v) for k, v in df.dtypes.to_dict().items()},
+        "dtypes": {k: str(v) for k, v in dtypes_raw.items()},
     }
 
     numeric_summary: dict[str, dict] = {}
@@ -55,20 +57,17 @@ def build_validation_report(df: pd.DataFrame, config: DataConfig) -> dict:
     categorical_summary: dict[str, dict] = {}
     for col in config.categorical_columns:
         if col in df.columns:
+            top_raw = df[col].value_counts().head(5).to_dict()
             categorical_summary[col] = {
                 "unique_count": int(df[col].nunique(dropna=True)),
-                "top_values": {
-                    k: int(v)
-                    for k, v in df[col].value_counts().head(5).to_dict().items()
-                },
+                "top_values": {k: int(v) for k, v in top_raw.items()},
             }
     report["categorical_summary"] = categorical_summary
 
     target = config.target_column
     if target in df.columns:
-        report["target_distribution"] = {
-            k: int(v) for k, v in df[target].value_counts().to_dict().items()
-        }
+        dist_raw = df[target].value_counts().to_dict()
+        report["target_distribution"] = {k: int(v) for k, v in dist_raw.items()}
     return report
 
 
