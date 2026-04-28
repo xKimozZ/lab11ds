@@ -42,4 +42,4 @@ coverage.xml
 # Generated pipeline artifacts
 data/processed/
 reports/
-models/
+/models/
